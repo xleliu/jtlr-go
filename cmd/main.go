@@ -71,7 +71,7 @@ func main() {
 			if err == io.EOF {
 				os.Exit(0)
 			}
-			if text == "\n" {
+			if text == "\n" || text == "\r\n" {
 				continue
 			}
 			jtlr.PrettyPrint(text)
