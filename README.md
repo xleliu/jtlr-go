@@ -15,7 +15,7 @@ interactive mode:
 > jtlr -a
 
 readline from stdin:
-> echo stdout.sh | jtlr -s
+> bash stdout.sh | jtlr -s
 
 ### todo:
 
