@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func TestPrint(t *testing.T) {
+func TestPrettyPrint(t *testing.T) {
 	type args struct {
 		input string
 	}

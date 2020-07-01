@@ -5,10 +5,11 @@ Inspire by [stedolan/jq](https://github.com/stedolan/jq), Created with [antlr4](
 
 ### todo:
 
-1. 上色
-2. unicode转义
-3. cli flag
-4. stdin读取、交互模式
-5. print改io.Writer
-6. 子树解析
-7. Marshal && Unmarshal
+- 上色
+- ~~unicode转义~~
+- ~~cli flag~~
+- ~~stdin读取、交互模式~~
+- interactive模式下特殊支付处理
+- print改io.Writer
+- 子树解析
+- Marshal && Unmarshal
