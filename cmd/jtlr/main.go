@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -22,6 +23,7 @@ var (
 	f_indent      string
 	f_stdin       bool
 	f_interactive bool
+	f_file        string
 )
 
 func init() {
@@ -29,6 +31,7 @@ func init() {
 	flag.StringVar(&f_indent, "t", "", "Set indent characters")
 	flag.BoolVar(&f_stdin, "s", false, "Read json from stdin")
 	flag.BoolVar(&f_interactive, "a", false, "Run as interactive shell")
+	flag.StringVar(&f_file, "f", "", "Read json from file")
 
 	flag.Usage = usage
 }
@@ -51,6 +54,20 @@ func main() {
 	// -t
 	if f_indent != "" {
 		jtlr.IDENT_CHAR = f_indent
+	}
+	// -f
+	if f_file != "" {
+		file, err := os.Open(f_file)
+		if err != nil {
+			log.Fatal(err.Error())
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			jtlr.PrettyPrint(scanner.Text())
+		}
+		os.Exit(0)
 	}
 	// -s
 	if f_stdin {
