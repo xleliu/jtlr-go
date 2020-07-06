@@ -37,7 +37,7 @@ func (c *PrettyPrintErrorListener) SyntaxError(
 	msg string,
 	e antlr.RecognitionException,
 ) {
-	fmt.Print("line " + strconv.Itoa(line) + ":" + strconv.Itoa(column) + " " + msg + CRLF)
+	fmt.Print(COLOR_Red, "line "+strconv.Itoa(line)+":"+strconv.Itoa(column)+" "+msg+CRLF, COLOR_Reset)
 }
 
 func PrettyPrint(input string) {

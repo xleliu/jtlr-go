@@ -28,7 +28,7 @@ func BasicShell(fn hanlder) {
 		if err == io.EOF {
 			break
 		}
-		if text == "" || text == "\n" || text == "\r\n" {
+		if text == "\n" || text == "\r\n" {
 			continue
 		}
 		fn(text)
@@ -36,13 +36,13 @@ func BasicShell(fn hanlder) {
 }
 
 func AdvancedShell(fn hanlder) {
-	oldstate, _ := terminal.MakeRaw(int(os.Stdin.Fd()))
+	oldState, _ := terminal.MakeRaw(int(os.Stdin.Fd()))
 	restore := func() {
-		terminal.Restore(int(os.Stdin.Fd()), oldstate)
+		terminal.Restore(int(os.Stdin.Fd()), oldState)
 	}
 	defer restore()
 
-	term := terminal.NewTerminal(&readerWriter{}, ">>> ")
+	term := terminal.NewTerminal(&readerWriter{}, COLOR_Reset+">>> ")
 	for {
 		text, err := term.ReadLine()
 		if err == io.EOF {
