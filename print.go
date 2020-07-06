@@ -11,6 +11,7 @@ import (
 
 var (
 	IDENT_CHAR = strings.Repeat(" ", 4)
+	CRLF       = "\r\n"
 )
 
 type PrettyPrintListener struct {
@@ -20,19 +21,41 @@ type PrettyPrintListener struct {
 	*parser.BaseJSONListener
 }
 
+type PrettyPrintErrorListener struct {
+	*antlr.DefaultErrorListener
+}
+
+func NewPrettyPrintErrorListener() *PrettyPrintErrorListener {
+	return new(PrettyPrintErrorListener)
+}
+
+func (c *PrettyPrintErrorListener) SyntaxError(
+	recognizer antlr.Recognizer,
+	offendingSymbol interface{},
+	line,
+	column int,
+	msg string,
+	e antlr.RecognitionException,
+) {
+	fmt.Print("line " + strconv.Itoa(line) + ":" + strconv.Itoa(column) + " " + msg + CRLF)
+}
+
 func PrettyPrint(input string) {
 	// Setup the input
 	is := antlr.NewInputStream(input)
 	// Create the Lexer
 	lexer := parser.NewJSONLexer(is)
+	lexer.RemoveErrorListeners()
+	// lexer.AddErrorListener(NewPrettyPrintErrorListener())
 
 	stream := antlr.NewCommonTokenStream(lexer, antlr.TokenDefaultChannel)
 	// Create the Parser
-	p := parser.NewJSONParser(stream)
+	parser := parser.NewJSONParser(stream)
 	// Finally parse the expression
-	p.AddErrorListener(antlr.NewDiagnosticErrorListener(true))
+	parser.RemoveErrorListeners()
+	parser.AddErrorListener(NewPrettyPrintErrorListener())
 
-	antlr.ParseTreeWalkerDefault.Walk(NewPrettyPrintListener(), p.Json())
+	antlr.ParseTreeWalkerDefault.Walk(NewPrettyPrintListener(), parser.Json())
 }
 
 func NewPrettyPrintListener() *PrettyPrintListener {
@@ -55,9 +78,9 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 
 	switch t {
 	case "]":
-		fmt.Print("\n", strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
+		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
 	case "}":
-		fmt.Print("\n", strings.Repeat(IDENT_CHAR, s.indent), t)
+		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
 	case ":":
 		fmt.Print(COLOR_Reset, t, " ")
 	case "true", "false":
@@ -71,13 +94,13 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 
 // ExitJson is called when production json is exited.
 func (s *PrettyPrintListener) ExitJson(ctx *parser.JsonContext) {
-	fmt.Println()
+	fmt.Print(CRLF)
 }
 
 // EnterPair is called when production pair is entered.
 func (s *PrettyPrintListener) EnterPair(ctx *parser.PairContext) {
 	s.indent++
-	fmt.Print("\n", strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
+	fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
 }
 
 // ExitPair is called when production pair is exited.
@@ -111,6 +134,6 @@ func (s *PrettyPrintListener) ExitObject(ctx *parser.ObjectContext) {
 // EnterValue is called when production value is entered.
 func (s *PrettyPrintListener) EnterValue(ctx *parser.ValueContext) {
 	if s.arrayLevel > 0 && !s.arrayPause {
-		fmt.Print("\n", strings.Repeat(IDENT_CHAR, s.indent))
+		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent))
 	}
 }

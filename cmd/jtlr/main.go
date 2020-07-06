@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"io"
 	"log"
 	"os"
 	"os/signal"
@@ -15,7 +14,7 @@ import (
 
 const (
 	INTRO   = "jtlr (v%s) - JSON Tools by Language Recognition.\n"
-	VERSION = "0.01"
+	VERSION = "0.02"
 )
 
 var (
@@ -80,21 +79,8 @@ func main() {
 	// -a
 	if f_interactive {
 		fmt.Printf(jtlr.COLOR_Blue+INTRO+jtlr.COLOR_Reset, VERSION)
-		reader := bufio.NewReader(os.Stdin)
-		for {
-			fmt.Print(">>> ")
-			text, err := reader.ReadString('\n')
-			if err != nil {
-				fmt.Fprintln(os.Stderr, err)
-			}
-			if err == io.EOF {
-				os.Exit(0)
-			}
-			if text == "\n" || text == "\r\n" {
-				continue
-			}
-			jtlr.PrettyPrint(text)
-		}
+		jtlr.AdvancedShell(jtlr.PrettyPrint)
+		os.Exit(0)
 	}
 	// default
 	jtlr.PrettyPrint(flag.Arg(0))

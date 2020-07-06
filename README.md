@@ -26,10 +26,10 @@ set indent
 ### todo:
 
 - 上色
-- ~~unicode转义~~
-- ~~cli flag~~
-- ~~stdin读取、交互模式~~
-- interactive模式下特殊字符处理
+- unicode转义 ✔︎
+- cli flag ✔︎
+- stdin读取、交互模式 ✔︎
+- interactive模式下特殊字符处理 ✔︎
 - 缩进中的 \t 处理
 - print改io.Writer
 - 子树解析
