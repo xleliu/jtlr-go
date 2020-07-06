@@ -52,6 +52,9 @@ func main() {
 
 	// -t
 	if f_indent != "" {
+		if f_indent == "\\t" {
+			f_indent = "\t"
+		}
 		jtlr.IDENT_CHAR = f_indent
 	}
 	// -f
