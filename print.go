@@ -92,6 +92,11 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 	}
 }
 
+// VisitErrorNode is called when an error node is visited.
+func (s *PrettyPrintListener) VisitErrorNode(node antlr.ErrorNode) {
+	fmt.Print(COLOR_Reset)
+}
+
 // ExitJson is called when production json is exited.
 func (s *PrettyPrintListener) ExitJson(ctx *parser.JsonContext) {
 	fmt.Print(CRLF)

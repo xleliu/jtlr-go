@@ -42,7 +42,7 @@ func AdvancedShell(fn hanlder) {
 	}
 	defer restore()
 
-	term := terminal.NewTerminal(&readerWriter{}, COLOR_Reset+">>> ")
+	term := terminal.NewTerminal(&readerWriter{}, ">>> ")
 	for {
 		text, err := term.ReadLine()
 		if err == io.EOF {
