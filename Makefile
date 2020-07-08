@@ -8,6 +8,6 @@ release:
 	go build $(LDFLAGS) -o jtlr$(EXE) cmd/jtlr/main.go
 
 parser:
-	antlr -Dlanguage=Go -o parser JSON.g4
+	antlr -Dlanguage=Go -o parser/ JSON.g4
 
-.PHONY: build parser
+.PHONY: build parser release
