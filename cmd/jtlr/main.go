@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	INTRO   = "jtlr (v%s) - JSON Tools by Language Recognition.\n"
+	INTRO   = "jtlr (v%s) - JSON Tools by Language Recognition."
 	VERSION = "0.02"
 )
 
@@ -82,7 +82,7 @@ func main() {
 	}
 	// -a
 	if f_interactive {
-		fmt.Printf(jtlr.COLOR_Blue+INTRO+jtlr.COLOR_Reset, VERSION)
+		fmt.Printf(jtlr.COLOR_Blue+INTRO+jtlr.COLOR_Reset+jtlr.CRLF, VERSION)
 		if runtime.GOOS == "windows" {
 			jtlr.BasicShell(jtlr.PrettyPrint)
 		} else {
