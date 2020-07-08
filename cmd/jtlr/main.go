@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"runtime"
 	"syscall"
 
 	"github.com/xiaoler/jtlr-go"
@@ -82,7 +83,11 @@ func main() {
 	// -a
 	if f_interactive {
 		fmt.Printf(jtlr.COLOR_Blue+INTRO+jtlr.COLOR_Reset, VERSION)
-		jtlr.AdvancedShell(jtlr.PrettyPrint)
+		if runtime.GOOS == "windows" {
+			jtlr.BasicShell(jtlr.PrettyPrint)
+		} else {
+			jtlr.AdvancedShell(jtlr.PrettyPrint)
+		}
 		os.Exit(0)
 	}
 	// default
