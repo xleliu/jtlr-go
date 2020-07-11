@@ -66,6 +66,10 @@ func NewPrettyPrintListener() *PrettyPrintListener {
 	}
 }
 
+func (s *PrettyPrintListener) print(a ...interface{}) (n int, err error) {
+	return fmt.Print(a...)
+}
+
 // VisitTerminal is called when a terminal node is visited.
 func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 	t := node.GetText()
@@ -78,34 +82,34 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 
 	switch t {
 	case "]":
-		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
+		s.print(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
 	case "}":
-		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
+		s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
 	case ":":
-		fmt.Print(COLOR_Reset, t, " ")
+		s.print(COLOR_Reset, t, " ")
 	case "true", "false":
-		fmt.Print(COLOR_White, t, COLOR_Reset)
+		s.print(COLOR_White, t, COLOR_Reset)
 	case "null":
-		fmt.Print(COLOR_Dark_Gray, t, COLOR_Reset)
+		s.print(COLOR_Dark_Gray, t, COLOR_Reset)
 	default:
-		fmt.Print(t)
+		s.print(t)
 	}
 }
 
 // VisitErrorNode is called when an error node is visited.
 func (s *PrettyPrintListener) VisitErrorNode(node antlr.ErrorNode) {
-	fmt.Print(COLOR_Reset)
+	s.print(COLOR_Reset)
 }
 
 // ExitJson is called when production json is exited.
 func (s *PrettyPrintListener) ExitJson(ctx *parser.JsonContext) {
-	fmt.Print(CRLF)
+	s.print(CRLF)
 }
 
 // EnterPair is called when production pair is entered.
 func (s *PrettyPrintListener) EnterPair(ctx *parser.PairContext) {
 	s.indent++
-	fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
+	s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
 }
 
 // ExitPair is called when production pair is exited.
@@ -139,6 +143,6 @@ func (s *PrettyPrintListener) ExitObject(ctx *parser.ObjectContext) {
 // EnterValue is called when production value is entered.
 func (s *PrettyPrintListener) EnterValue(ctx *parser.ValueContext) {
 	if s.arrayLevel > 0 && !s.arrayPause {
-		fmt.Print(CRLF, strings.Repeat(IDENT_CHAR, s.indent))
+		s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent))
 	}
 }
