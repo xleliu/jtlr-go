@@ -77,11 +77,15 @@ func (s *PrettyPrintListener) write(a ...interface{}) (n int, err error) {
 // VisitTerminal is called when a terminal node is visited.
 func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 	t := node.GetText()
-	// unescape unicode, better way?
-	if node.GetSymbol().GetTokenType() == parser.JSONLexerSTRING {
+
+	switch node.GetSymbol().GetTokenType() {
+	case parser.JSONLexerSTRING:
+		// unescape unicode, better way?
 		if unquoted, err := strconv.Unquote(t); err == nil {
 			t = "\"" + unquoted + "\""
 		}
+	case parser.JSONLexerNUMBER:
+		t = COLOR_Purple + t + COLOR_Reset
 	}
 
 	switch t {
