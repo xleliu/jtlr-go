@@ -1,7 +1,9 @@
 package jtlr
 
 import (
+	"bytes"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -18,6 +20,7 @@ type PrettyPrintListener struct {
 	indent     int
 	arrayLevel int
 	arrayPause bool
+	output     *bytes.Buffer
 	*parser.BaseJSONListener
 }
 
@@ -63,11 +66,12 @@ func NewPrettyPrintListener() *PrettyPrintListener {
 		indent:     0,
 		arrayLevel: 0,
 		arrayPause: false,
+		output:     new(bytes.Buffer),
 	}
 }
 
-func (s *PrettyPrintListener) print(a ...interface{}) (n int, err error) {
-	return fmt.Print(a...)
+func (s *PrettyPrintListener) write(a ...interface{}) (n int, err error) {
+	return fmt.Fprint(s.output, a...)
 }
 
 // VisitTerminal is called when a terminal node is visited.
@@ -82,34 +86,36 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 
 	switch t {
 	case "]":
-		s.print(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
+		s.write(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
 	case "}":
-		s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
+		s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
 	case ":":
-		s.print(COLOR_Reset, t, " ")
+		s.write(COLOR_Reset, t, " ")
 	case "true", "false":
-		s.print(COLOR_White, t, COLOR_Reset)
+		s.write(COLOR_White, t, COLOR_Reset)
 	case "null":
-		s.print(COLOR_Dark_Gray, t, COLOR_Reset)
+		s.write(COLOR_Dark_Gray, t, COLOR_Reset)
 	default:
-		s.print(t)
+		s.write(t)
 	}
 }
 
 // VisitErrorNode is called when an error node is visited.
 func (s *PrettyPrintListener) VisitErrorNode(node antlr.ErrorNode) {
-	s.print(COLOR_Reset)
+	s.write(COLOR_Reset)
+	s.output.WriteTo(os.Stdout)
 }
 
 // ExitJson is called when production json is exited.
 func (s *PrettyPrintListener) ExitJson(ctx *parser.JsonContext) {
-	s.print(CRLF)
+	s.write(CRLF)
+	s.output.WriteTo(os.Stdout)
 }
 
 // EnterPair is called when production pair is entered.
 func (s *PrettyPrintListener) EnterPair(ctx *parser.PairContext) {
 	s.indent++
-	s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
+	s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
 }
 
 // ExitPair is called when production pair is exited.
@@ -143,6 +149,6 @@ func (s *PrettyPrintListener) ExitObject(ctx *parser.ObjectContext) {
 // EnterValue is called when production value is entered.
 func (s *PrettyPrintListener) EnterValue(ctx *parser.ValueContext) {
 	if s.arrayLevel > 0 && !s.arrayPause {
-		s.print(CRLF, strings.Repeat(IDENT_CHAR, s.indent))
+		s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent))
 	}
 }
