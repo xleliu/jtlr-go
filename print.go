@@ -90,7 +90,7 @@ func (s *PrettyPrintListener) VisitTerminal(node antlr.TerminalNode) {
 
 	switch t {
 	case "]":
-		s.write(CRLF, strings.Repeat(IDENT_CHAR, (s.indent-1)), t)
+		s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent-1), t)
 	case "}":
 		s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent), t)
 	case ":":
