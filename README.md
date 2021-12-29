@@ -4,7 +4,7 @@ Inspire by [stedolan/jq](https://github.com/stedolan/jq), Created with [antlr4](
 
 ### Try it
 
-> go get -u github.com/xiaoler/jtlr-go/cmd/jtlr
+> go install github.com/xiaoler/jtlr-go/cmd/jtlr
 
 ### Feature
 
