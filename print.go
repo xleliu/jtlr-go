@@ -119,7 +119,7 @@ func (s *PrettyPrintListener) ExitJson(ctx *parser.JsonContext) {
 // EnterPair is called when production pair is entered.
 func (s *PrettyPrintListener) EnterPair(ctx *parser.PairContext) {
 	s.indent++
-	s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Blue)
+	s.write(CRLF, strings.Repeat(IDENT_CHAR, s.indent), COLOR_Cyan)
 }
 
 // ExitPair is called when production pair is exited.
